@@ -15,13 +15,13 @@ import yaml
 from djitellopy import Tello
 
 from rclpy.node import Node
-from tello_msg.msg import TelloStatus, TelloID, TelloWifiConfig
+from tello_msg.msg import TelloStatus, TelloID, TelloWifiConfig 
 from std_msgs.msg import Empty, UInt8, UInt8, Bool, String
-from sensor_msgs.msg import Image, Imu, BatteryState, Temperature, CameraInfo
 from geometry_msgs.msg import Twist, TransformStamped
 from nav_msgs.msg import Odometry
 from cv_bridge import CvBridge
 import ament_index_python
+from sensor_msgs.msg import BatteryState, Image, CameraInfo, Imu, Temperature
 
 # Tello ROS node class, inherits from the Tello controller object.
 #
@@ -58,7 +58,7 @@ class TelloNode():
         # Read camera info from YAML file
         with open(self.camera_info_file, 'r') as file:
             self.camera_info = yaml.load(file, Loader=yaml.FullLoader)
-            # self.node.get_logger().info('Tello: Camera information YAML' + self.camera_info.__str__())
+            self.node.get_logger().info('Tello: Camera information YAML' + self.camera_info.__str__())
 
         # Configure drone connection
         Tello.TELLO_IP = self.tello_ip
@@ -233,13 +233,13 @@ class TelloNode():
                 # Camera info
                 if self.pub_camera_info.get_subscription_count() > 0:
                     msg = CameraInfo()
-                    msg.height = self.camera_info.image_height
-                    msg.width = self.camera_info.image_width
-                    msg.distortion_model = self.camera_info.distortion_model
-                    msg.D = self.camera_info.distortion_coefficients
-                    msg.K = self.camera_info.camera_matrix
-                    msg.R = self.camera_info.rectification_matrix
-                    msg.P = self.camera_info.projection_matrix
+                    msg.height = self.camera_info['image_height']
+                    msg.width = self.camera_info['image_width']
+                    msg.distortion_model = self.camera_info['distortion_model']
+                    msg.D = self.camera_info['distortion_coefficients']['data']
+                    msg.K = self.camera_info['camera_matrix']['data']
+                    msg.R = self.camera_info['rectification_matrix']['data']
+                    msg.P = self.camera_info['projection_matrix']['data']
                     self.pub_camera_info.publish(msg)
                 
                 # Sleep

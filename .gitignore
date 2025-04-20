@@ -6,6 +6,10 @@ workspace/src/build/
 workspace/src/lib/
 workspace/src/install/
 
+/build
+/install
+/log
+
 .vscode/.ropeproject/
 
 log/
